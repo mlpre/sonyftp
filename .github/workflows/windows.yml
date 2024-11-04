@@ -1,0 +1,20 @@
+name: SonyFtp Build
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '23'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: mvn package
+        run: mvn package
+      - name: native image
+        run: native-image -jar target/SonyFtp.jar
+      - uses: actions/upload-artifact@v4
+        with:
+          path: SonyFtp.exe
